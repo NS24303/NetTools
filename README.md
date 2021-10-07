@@ -17,3 +17,6 @@ script for taking a fixed out and performing following:
 - split output to grab model and serial
 - convert field to lower case
 - perform boolen check on output
+
+# arp_table_format
+Take unformatted output of arp and format into table 
