@@ -18,5 +18,5 @@ script for taking a fixed out and performing following:
 - convert field to lower case
 - perform boolen check on output
 
-# arp_table_format
+# arp_table_format.py
 Take unformatted output of arp and format into table 
