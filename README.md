@@ -20,3 +20,9 @@ script for taking a fixed out and performing following:
 
 # arp_table_format.py
 Take unformatted output of arp and format into table 
+
+# files.py
+Initial testing of using external files with python scrips
+
+# lists.py
+demo of simple lists
