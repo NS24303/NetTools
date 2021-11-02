@@ -31,3 +31,37 @@ print ("script continues")
 # https://newbedev.com/how-to-make-a-python-program-automatically-restart-itself
 # or use a while loop that exits if/when verify = y
 
+# need to do some regex or error checking on how the user enters the first 3 octets
+# i.e. '10.20.30.' vs '10.20.30'
+# if first, pass, if second add another .
+
+''' 
+# courtesy of Lofty 
+
+def grab_inputs():
+    ip_range = input("Please enter the range (first 3 octets, i.e. 10.20.30): ")
+    start = input("What is the first IP in the range? ")
+    end = input("What is the last IP in the range? ")
+    return ip_range, start, end
+
+def verification():
+    verify = input("Is this correct? (y/n)")
+    verify = verify.lower()
+    print(verify)
+    return verify
+
+def main():
+    verify = 'n'
+    while verify != 'y':
+        ip_range, start, end = grab_inputs()
+        print("\n\nIP Address range is", ip_range + start, "-", end)
+        verify = verification()
+        if verify == 'n':
+            print("Verification failed. Restarting...")
+        elif verify == 'y':
+            print('Verification Complete...')
+
+main()
+
+'''
+
