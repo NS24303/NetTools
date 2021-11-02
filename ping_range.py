@@ -13,7 +13,18 @@ end = input("What is the last IP in the range? ")
 print("\n\nIP Address range is" ,ip_range + start,"-" ,end)
 
 verify = input("Is this correct? (y/n)")
+verify = verify.lower()
+print(verify)
 
-# if statement to verify if 'y' or 'n'
-# if y continue, otherwise break
+# if verify is 'y' continue
+if verify == 'y':
+    pass
+else:
+    print("Verification failed. Exiting script")
+    exit()
+
+# do something else to verify if loop continues script vs stop if not
+print ("script continues")
+
+# rather then exit, could it restart the script?
 
