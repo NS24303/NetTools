@@ -27,4 +27,7 @@ else:
 print ("script continues")
 
 # rather then exit, could it restart the script?
+# look into options such as
+# https://newbedev.com/how-to-make-a-python-program-automatically-restart-itself
+# or use a while loop that exits if/when verify = y
 
