@@ -1,0 +1,124 @@
+hostname {{ device_id }}
+!
+enable password {{ enable_pass }}
+!
+names
+!
+interface management0/0
+  description [Mgmt-Interface]
+  management-only
+  nameif {{ mgmt_int_name }}
+  security-level 100
+  ip address {{ mgmt_ip }} {{ mgmt_mask }} standby {{ stby_mgmt_ip }}
+!
+interface GigabitEthernet0/7
+  description [Failover Interface]
+  nameif failover
+!
+dns domain-lookup {{ mgmt_int_name }}
+!
+access-list acl_{{ mgmt_int_name }} remark <<< {{ mgmt_int_name }} >>>
+access-list acl_{{ mgmt_int_name }} remark >
+access-list acl_{{ mgmt_int_name }} remark === Default Deny Security Policy ===
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 10.0.0.0 255.0.0.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 172.16.0.0 255.240.0.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 192.168.0.0 255.255.0.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 240.0.0.0 240.0.0.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 127.0.0.0 255.0.0.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 169.254.0.0 255.255.0.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 192.0.2.0 255.255.255.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 198.51.100.0 255.255.255.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 203.0.113.0 255.255.255.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 host :: log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 198.18.0.0 255.255.254.0 log
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 239.0.0.0 255.255.255.0 log
+access-list acl_{{ mgmt_int_name }} remark >
+access-list acl_{{ mgmt_int_name }} remark === Deny ALL Policy with Log Catch ===
+access-list acl_{{ mgmt_int_name }} extended deny ip any4 any4 log
+access-list acl_{{ mgmt_int_name }} remark >
+!
+pager lines 24
+!
+logging enable
+logging timestamp
+logging buffer-size 49152
+logging buffered informational
+logging trap informational
+logging asdm informational
+logging device-id hostname
+!
+logging host {{ mgmt_int_name }} {{ logging_ip }}
+!
+no logging message 302015
+no logging message 302014
+no logging message 302013
+no logging message 302016
+no logging message 302021
+no logging message 302020
+logging rate-limit 200 1 message 106100
+!
+mtu {{ mgmt_int_name }} 1500
+ip verify reverse-path interface {{ mgmt_int_name }}
+monitor-interface {{ mgmt_int_name }}
+access-group acl_{{ mgmt_int_name }} in interface {{ mgmt_int_name }}
+!
+icmp permit {{ icmp_range }} {{ icmp_mask }} {{ mgmt_int_name }}
+icmp permit {{ icmp_range }} {{ icmp_mask }} echo {{ mgmt_int_name }}
+icmp permit {{ icmp_range }} {{ icmp_mask }} echo-reply {{ mgmt_int_name }}
+icmp permit {{ icmp_range }} {{ icmp_mask }} time-exceeded {{ mgmt_int_name }}
+icmp deny any {{ mgmt_int_name }}
+!
+failover
+failover lan unit {{ failover_status }}
+failover lan interface failover GigabitEthernet0/7
+failover polltime unit msec 200 holdtime msec 800
+failover key {{ failover_key }}
+failover replication http
+failover link failover GigabitEthernet0/7
+failover interface ip failover {{ fover_pri_ip}} {{ fover_mask}} standby {{ fover_sec_ip}}
+!
+route {{ mgmt_int_name }} {{ default_route }} {{ default_gw }}
+!
+snmp-server location {{ snmp_location }}
+snmp-server contact {{ snmp_contact }}
+snmp-server group {{ snmp_group }}  v3 priv
+!
+snmp-server user {{ snmp_user }} {{ snmp_group }} v3 auth sha {{ snmp_auth }} priv aes-128 {{ snmp_priv }} access ACL-SNMP-PERMIT-IN
+snmp-server host {{ mgmt_int_name }} {{ snmp_trap_ip }} version 3 {{ snmp_user }}
+!
+ssh timeout 30
+ssh version 2
+ssh key-exchange group dh-group14-sha1
+!
+{%- for ssh_ip in ssh_acl %}
+ssh {{ ssh_ip }} {{ mgmt_int_name }}
+{%- endfor %}
+!
+threat-detection basic-threat
+threat-detection statistics access-list
+!
+aaa-server AAA-TACACS protocol tacacs+
+aaa-server AAA-TACACS ( {{ mgmt_int_name }} ) host {{ tacacs_ip }}
+ key {{ tacacs_password }}
+
+user-identity default-domain LOCAL
+aaa authentication http console AAA-TACACS LOCAL
+aaa authentication ssh console AAA-TACACS LOCAL
+aaa authentication enable console AAA-TACACS LOCAL
+aaa authorization command AAA-TACACS LOCAL
+aaa authentication login-history
+!
+http server enable
+!
+{%- for http_ip in http_acl %}
+http {{ http_ip }} {{ mgmt_int_name }}
+{%- endfor %}
+!
+ntp authentication-key 1 md5 {{ ntp_password }}
+ntp authenticate
+ntp trusted-key 1
+ntp server  {{ ntp_source }} key 1 source {{ mgmt_int_name }} prefer
+!
+username {{ username }} password {{ password }}  privilege 15
+!
+prompt hostname priority state
