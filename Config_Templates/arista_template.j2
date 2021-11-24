@@ -1,0 +1,77 @@
+hostname {{ device_id }}
+!
+ntp authentication-key 45 md5 7 {{ ntp_password }}
+ntp trusted-key 45
+ntp authenticate
+ntp server vrf management {{ ntp_source }} prefer key 45
+!
+snmp-server group {{ snmp_group }} v3 priv read _all_
+snmp-server host {{ snmp_trap_ip }} version 3 priv {{ snmp_user }}
+snmp-server location {{ snmp_location }}
+snmp-server contact {{ snmp_contact }}
+snmp-server user {{ snmp_user }} {{ snmp_group }} v3 auth sha {{ snmp_auth }} priv aes {{ snmp_priv }}
+snmp-server enable traps
+no snmp-server vrf default
+snmp-server vrf management
+!
+spanning-tree mode rapid-pvst
+!
+tacacs-server host {{ tacacs_ip }} vrf management key 7 {{ tacacs_password }}
+!
+aaa group server tacacs+ AAA-TACACS
+   serve r{{ tacacs_ip }} vrf management
+!
+aaa authentication login default group AAA-TACACS local
+aaa authentication enable default group AAA-TACACS local
+aaa authorization exec default group AAA-TACACS
+aaa authorization commands 0,15 default group AAA-TACACS none
+aaa accounting exec default start-stop group AAA-TACACS
+aaa accounting commands all default start-stop group AAA-TACACS
+!
+no aaa root
+!
+username {{ username }} privilege 15 secret sha512 {{ password }}
+!
+clock timezone GB
+
+vlan {{ mlag_vlan }}
+   trunk group MLAG-Peer
+!
+vrf definition management
+   rd 101:1
+
+interface Port-Channel50
+   description [MLAG PortChannel]
+   switchport trunk native vlan {{ native_vlan }}
+   switchport mode trunk
+   switchport trunk group MLAG-Peer
+
+interface Ethernet {{ mlag_int }}
+   channel-group 50 mode active
+
+interface Management1
+  description [Mgmt-Interface]
+   vrf forwarding management
+   ip address {{ mgmt_ip }}
+!
+interface Vlan {{ mlag_vlan }}
+   description [MLAG SVI]
+   ip address {{ mlag_ip }}
+!
+!
+ip access-list standard ACL-SSH-PERMIT-IN
+    {%- for ssh_ip in ssh_acl %}
+    permit ip {{ ssh_ip }} any
+    {%- endfor %}
+!
+ip route vrf management {{ default_route }} {{ default_gw }}
+!
+ip routing
+no ip routing vrf management
+!
+mlag configuration
+   domain-id MLAG-1
+   local-interface Vlan {{ mlag_vlan }}
+   peer-address {{ mlag_peer_ip }}
+   peer-link Port-Channel50
+   reload-delay 150
