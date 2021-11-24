@@ -90,9 +90,7 @@ ssh timeout 30
 ssh version 2
 ssh key-exchange group dh-group14-sha1
 !
-{%- for ssh_ip in ssh_acl %}
 ssh {{ ssh_ip }} {{ mgmt_int_name }}
-{%- endfor %}
 !
 threat-detection basic-threat
 threat-detection statistics access-list
@@ -110,9 +108,7 @@ aaa authentication login-history
 !
 http server enable
 !
-{%- for http_ip in http_acl %}
 http {{ http_ip }} {{ mgmt_int_name }}
-{%- endfor %}
 !
 ntp authentication-key 1 md5 {{ ntp_password }}
 ntp authenticate
