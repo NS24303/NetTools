@@ -1,1 +1,0 @@
-device_id,ntp_password,ntp_source,snmp_group,snmp_trap_ip,snmp_user,snmp_location,snmp_contact,snmp_user,snmp_auth,snmp_priv,tacacs_ip,tacacs_password,username,password,mlag_vlan,native_vlan,mgmt_ip,ssh_ip,default_route,default_gw,mlag_peer_ip. mlag_int

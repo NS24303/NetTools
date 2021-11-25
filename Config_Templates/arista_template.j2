@@ -19,7 +19,7 @@ spanning-tree mode rapid-pvst
 tacacs-server host {{ tacacs_ip }} vrf management key 7 {{ tacacs_password }}
 !
 aaa group server tacacs+ AAA-TACACS
-   serve r{{ tacacs_ip }} vrf management
+   server {{ tacacs_ip }} vrf management
 !
 aaa authentication login default group AAA-TACACS local
 aaa authentication enable default group AAA-TACACS local
@@ -61,7 +61,7 @@ interface Vlan {{ mlag_vlan }}
 !
 ip access-list standard ACL-SSH-PERMIT-IN
     {%- for ssh_ip in ssh_acl %}
-    permit ip {{ ssh_ip }} any
+    permit ip {{ ssh_ip }}
     {%- endfor %}
 !
 ip route vrf management {{ default_route }} {{ default_gw }}
