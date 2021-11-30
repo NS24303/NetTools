@@ -6,11 +6,21 @@ given subnet and range
 - User verification using an if statmment
 '''
 
+import os
+
+base_cmd_linux = "ping -c 2"
+base_cmd_windows = "ping -n 2"
+WINDOWS = False
+base_cmd = base_cmd_windows if WINDOWS else base_cmd_linux
+
 ip_range = input("Please enter the range (first 3 octets): ")
 start = input("What is the first IP in the range? ")
 end = input("What is the last IP in the range? ")
 
 print("\n\nIP Address range is" ,ip_range + start,"-" ,end)
+
+range_start = int(start)
+range_end = int(end)
 
 verify = input("Is this correct? (y/n)")
 verify = verify.lower()
@@ -23,9 +33,15 @@ else:
     print("Verification failed. Exiting script")
     exit()
 
+for ip in range(range_start, range_end+1):
+    ip = str(ip)
+    address = ip_range+ip
+    print("IP Address to Ping is: ", address)
+    return_code = os.system("{} {}".format(base_cmd, address))
+    print("-" * 40, "\n")
+
 # do something else to verify if loop continues script vs stop if not
 print ("script continues")
-
 # rather then exit, could it restart the script?
 # look into options such as
 # https://newbedev.com/how-to-make-a-python-program-automatically-restart-itself
