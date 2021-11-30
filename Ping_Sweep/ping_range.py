@@ -5,6 +5,16 @@ given subnet and range
 '''
 
 import os
+import platform
+
+def which_os():
+    current_os = platform.system()
+    current_os = current_os.lower()
+    if current_os == 'windows':
+        WINDOWS = True
+    elif current_os != 'windows':
+        WINDOWS = False
+    return WINDOWS
 
 def capture_inputs():
     ip_range = input("Please enter the range (first 3 octets, i.e. 10.20.30.): ")
@@ -20,7 +30,7 @@ def verify_range():
 def main():
     base_cmd_linux = "ping -c 2"
     base_cmd_windows = "ping -n 2"
-    WINDOWS = False
+    WINDOWS = which_os()
     base_cmd = base_cmd_windows if WINDOWS else base_cmd_linux
     verify = 'n'
     while verify != 'y':
@@ -44,4 +54,3 @@ main()
 # Future improvement to this script will be error checking on the IP address.
 # This will ensure the first 3 octets are in the valid format:
 # i.e. '10.20.30.' vs '10.20.30' or '356.20.30.'
-
