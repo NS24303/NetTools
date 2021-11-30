@@ -1,4 +1,4 @@
-# Config_Templates
+# Config Templates
 
 Scripts using Jinja2 to create configuration templates for various network platforms including
 
