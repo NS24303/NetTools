@@ -6,6 +6,6 @@ The purpose of this script will:
 - Run a command provided either at run time
 
 Plans
-- The devices should ideally be a external file with a list of IPs or hostnames
-- the script will be written with the use of functions
-- The output of the script will be logged to screen and a file. 
+- The devices should ideally be a external file with a list of IPs or hostnames (DONE)
+- the script will be written with the use of functions (DONE)
+- The output of the script will be logged to screen and a file. (DONE)
