@@ -2,7 +2,7 @@
 
 import ipaddress
 
-user_subnet = input("Enter a subnet: ")
+user_subnet = input("Enter a subnet: (i.e. 10.0.0.0/29) ")
 net4 = ipaddress.ip_network(user_subnet)
 
 for x in net4.hosts():
