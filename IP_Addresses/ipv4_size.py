@@ -1,4 +1,4 @@
-# simple script using the ipaddress module to print the useable IPs in a subnet
+# simple script using the ipaddress module to print the useable IP addresses in an ipv4 subnet
 
 import ipaddress
 
