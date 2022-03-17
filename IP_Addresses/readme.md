@@ -22,5 +22,3 @@ then outputs all of the subnets in the given supernet
 ### valid_ip.py
 
 A function used to validate if a user entered IP address is a valid IPv4 or IPv6 address
-
-Test commit
